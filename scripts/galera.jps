@@ -25,8 +25,11 @@ onAfterScaleOut[sqldb]:
   - forEach(event.response.nodes):
     - setupInstance:
         id: "${@i.id}"
-    - cmd[${@i.id}]: "/etc/init.d/mysql restart"
-      user: root
+    - cmd[${@i.id}]: "sudo /etc/init.d/mysql restart"
+
+onBeforeScaleIn[sqldb]:
+  forEach(event.response.nodes):
+    cmd[${@i.id}]: "sudo /etc/init.d/mysql stop"
 
 onAfterScaleIn[sqldb]:
   setupSeeds
